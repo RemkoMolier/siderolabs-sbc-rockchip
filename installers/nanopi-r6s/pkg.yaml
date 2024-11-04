@@ -1,0 +1,25 @@
+name: nanopi-r6s
+variant: scratch
+shell: /toolchain/bin/bash
+dependencies:
+  - stage: base
+steps:
+  - env:
+      GOPATH: /go
+    cachePaths:
+      - /.cache/go-build
+      - /go/pkg
+    build:
+      - |
+        export PATH=${PATH}:${TOOLCHAIN}/go/bin
+
+        cd /pkg/src
+        CGO_ENABLED=0 go build -o ./nanopi-r6s .
+    install:
+      - |
+        mkdir -p /rootfs/installers/
+
+        cp /pkg/src/nanopi-r6s /rootfs/installers/nanopi-r6s
+finalize:
+  - from: /rootfs
+    to: /rootfs
